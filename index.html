@@ -1,0 +1,79 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ZTE A开头随机码 授权码计算</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.bootcdn.net/ajax/libs/spark-md5/3.0.2/spark-md5.min.js"></script>
+</head>
+<body>
+<div class="container pt-5">
+    <div class="row justify-content-center gy-2">
+        <div class="col-sm-10 col-md-8 col-lg-5">
+            <h3>ZTE A开头随机码 授权码计算</h3>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="mac" class="form-label">机顶盒 MAC 地址</label>
+                        <input type="text" maxlength="17" class="form-control" id="mac" placeholder="XX:XX:XX:XX:XX:XX">
+                    </div>
+                    <div class="mb-3">
+                        <label for="random_code" class="form-label">A 开头随机码</label>
+                         <input type="text" maxlength="6" class="form-control" id="random_code" placeholder="A12345">
+                    </div>
+
+                    <button class="btn btn-primary w-100 shadow-none" id="generate">计算！</button>
+                </div>
+            </div>
+
+            <div class="small text-muted font-monospace">
+                <div class="pt-3">请输入机顶盒 mac 地址、随机码后点击计算按钮。mac 地址请使用英文冒号分隔</div>
+                <div class="pt-3 text-center"><a href="https://https.gs/">web1n</a></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function isMac(mac) {
+            const regex = /^[A-Fa-f\d]{2}:[A-Fa-f\d]{2}:[A-Fa-f\d]{2}:[A-Fa-f\d]{2}:[A-Fa-f\d]{2}:[A-Fa-f\d]{2}$/;
+            const regexp = new RegExp(regex);
+
+            return regexp.test(mac);
+        }
+
+        function generateCode(mac, random_code) {
+            let tempMac = mac.toUpperCase().replace(":", "A");
+
+            for (let i = 1; i <= 4; i++) {
+                tempMac = tempMac.replace(":", random_code[i]);
+            }
+            tempMac += random_code[5];
+
+            const md5Mac = SparkMD5.hash(tempMac);
+            console.log(md5Mac);
+
+            const code = md5Mac.replaceAll(/[^0-9]/g, "").substr(0, 6);
+            console.log(code);
+            return code;
+        }
+
+        document.getElementById("generate").onclick = () => {
+            const mac = document.getElementById("mac").value;
+            const random_code = document.getElementById("random_code").value;
+            if (!isMac(mac)) {
+                alert("请输入正确的 mac 地址");
+                return;
+            }
+            if (random_code.length !== 6 || random_code[0] !== "A") {
+                alert("请输入正确的随机码（只支持 A 开头六位随机码）");
+                return;
+            }
+            console.log(mac, random_code);
+
+            const code = generateCode(mac, random_code);
+            alert(`你的授权码是：${code}，请复制后粘贴到机顶盒的授权码输入框`);
+        }
+    </script>
+</body>
+</html>
