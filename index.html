@@ -43,9 +43,9 @@
         }
 
         function generateCode(mac, random_code) {
-            let tempMac = mac.toUpperCase().replace(":", "A");
+            let tempMac = mac.toUpperCase();
 
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 0; i <= 4; i++) {
                 tempMac = tempMac.replace(":", random_code[i]);
             }
             tempMac += random_code[5];
